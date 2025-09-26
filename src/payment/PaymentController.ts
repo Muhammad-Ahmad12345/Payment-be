@@ -8,7 +8,8 @@ export class PaymentController {
 
   async makePayment(req: Request, res: Response) {
     try {
-      const response = await this.paymentService.createPayment(req.body);
+      const response = await this.paymentService.confirmPaymentIntent(req.body.paymentIntentId);
+
       res.status(200).json(response);
     } catch (error) {
       if (error instanceof Error) {
