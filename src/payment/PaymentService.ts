@@ -22,6 +22,7 @@ export class PaymentService {
         payment_method: "pm_card_visa",
       }
     );
+
     const pi = paymentIntent as Stripe.PaymentIntent & {
       charges?: { data?: Stripe.Charge[] };
     };
