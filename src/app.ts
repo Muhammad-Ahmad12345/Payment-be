@@ -8,7 +8,7 @@ import path from "path";
 
 import { PaymentController } from "./payment/PaymentController";
 
-dotenv.config({ path: path.resolve(__dirname, ".env") });
+dotenv.config(); 
 
 const app = express();
 const port = process.env.PORT || 4000;
