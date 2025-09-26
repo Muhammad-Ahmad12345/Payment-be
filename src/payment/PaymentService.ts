@@ -10,51 +10,28 @@ export class PaymentService {
   private stripe: Stripe;
 
   constructor() {
-     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-    apiVersion: "2025-08-27.basil", 
-  });
+    this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: "2025-08-27.basil", 
+    });
   }
 
-  async createPayment(data: PaymentRequestDto): Promise<PaymentResponseDto> {
-    const paymentIntent = await this.stripe.paymentIntents.create({
-      amount: data.amount,
-      currency: data.currency,
-      payment_method: data.paymentMethodId,
-      confirm: true,
-      automatic_payment_methods: {
-        enabled: true,
-        allow_redirects: "never", 
-      },
-    });
-
-     if (paymentIntent.status === "succeeded") {
-      try {
-        const repo = AppDataSource.getMongoRepository(Payment);
-
-     const charge = paymentIntent.charges?.data?.[0];
-
-const last4 = charge?.payment_method_details?.card?.last4 || undefined;
-const billingName = charge?.billing_details?.name || undefined;
-
-        const paymentRecord = repo.create({
-          paymentIntentId: paymentIntent.id,
-          amount: data.amount,
-          currency: data.currency,
-          status: paymentIntent.status,
-          billingName,
-          cardLast4: last4,
-        });
-
-         await repo.save(paymentRecord);
-        console.log("✅ Payment saved to DB:", paymentIntent.id);
-      } catch (dbErr) {
-        console.error("❌ Failed to save payment record:", dbErr);
+  async confirmPaymentIntent(paymentIntentId: string) {
+    const paymentIntent = await this.stripe.paymentIntents.confirm(
+      paymentIntentId,
+      {
+        payment_method: "pm_card_visa",
       }
-    }
+    );
+    const pi = paymentIntent as Stripe.PaymentIntent & {
+      charges?: { data?: Stripe.Charge[] };
+    };
+
+    const charge = pi.charges?.data?.[0];
 
     return {
-      clientSecret: paymentIntent.client_secret || "",
       status: paymentIntent.status,
+      chargeId: charge?.id,
+      receiptUrl: charge?.receipt_url,
     };
   }
 }
