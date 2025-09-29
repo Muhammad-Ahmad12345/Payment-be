@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 4000;
 
-app.use(cors());
+app.use(cors({ origin: "https://payment-frontend-eta.vercel.app" }));
 app.use(express.json());
 
 const paymentController = Container.get(PaymentController);
