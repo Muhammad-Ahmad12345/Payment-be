@@ -6,11 +6,17 @@ import { PaymentService } from "./PaymentService";
 export class PaymentController {
   constructor(private paymentService: PaymentService) {}
 
-  async makePayment(req: Request, res: Response) {
+ async makePayment(req: Request, res: Response) {
     try {
-      const response = await this.paymentService.confirmPaymentIntent(req.body.paymentIntentId);
+      const { amount, currency, paymentMethodId } = req.body;
 
-      res.status(200).json(response);
+      const paymentIntent = await this.paymentService.createPaymentIntent(
+        amount,
+        currency,
+        paymentMethodId
+      );
+
+      res.status(200).json(paymentIntent);
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ message: error.message });
