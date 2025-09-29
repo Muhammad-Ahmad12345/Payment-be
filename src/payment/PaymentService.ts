@@ -15,24 +15,16 @@ export class PaymentService {
     });
   }
 
-  async confirmPaymentIntent(paymentIntentId: string) {
-    const paymentIntent = await this.stripe.paymentIntents.confirm(
-      paymentIntentId,
-      {
-        payment_method: "pm_card_visa",
-      }
-    );
-
-    const pi = paymentIntent as Stripe.PaymentIntent & {
-      charges?: { data?: Stripe.Charge[] };
-    };
-
-    const charge = pi.charges?.data?.[0];
-
-    return {
-      status: paymentIntent.status,
-      chargeId: charge?.id,
-      receiptUrl: charge?.receipt_url,
-    };
+ async createPaymentIntent(amount: number, currency: string, paymentMethodId: string) {
+    return await this.stripe.paymentIntents.create({
+      amount,
+      currency,
+      payment_method: paymentMethodId,
+      confirm: true,
+      automatic_payment_methods: {
+      enabled: true,
+      allow_redirects: "never", 
+    }, 
+    });
   }
 }
