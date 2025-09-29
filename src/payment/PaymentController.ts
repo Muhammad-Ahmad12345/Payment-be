@@ -16,7 +16,11 @@ export class PaymentController {
         paymentMethodId
       );
 
-      res.status(200).json(paymentIntent);
+      res.status(200).json({
+      clientSecret: paymentIntent.client_secret,
+      status: paymentIntent.status,
+      amount: paymentIntent.amount
+    });
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ message: error.message });
