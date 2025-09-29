@@ -20,7 +20,13 @@ export class PaymentService {
       amount,
       currency,
       payment_method: paymentMethodId,
-      confirm: true, // confirm at the same time
+
+      confirm: true,
+      automatic_payment_methods: {
+      enabled: true,
+      allow_redirects: "never", 
+    }, 
+
     });
   }
 }
