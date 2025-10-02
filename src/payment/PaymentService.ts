@@ -20,13 +20,19 @@ export class PaymentService {
       amount,
       currency,
       payment_method: paymentMethodId,
-
-      confirm: true,
-      automatic_payment_methods: {
-      enabled: true,
-      allow_redirects: "never", 
-    }, 
-
+      confirm: true, 
     });
+  }
+
+  async savePayment(amount: number, currency: string, paymentMethodId: string, status: string) {
+    const paymentRepo = AppDataSource.getMongoRepository(Payment);
+    const newPayment = paymentRepo.create({
+      amount,
+      currency,
+      paymentMethodId,
+      status,
+      createdAt: new Date(),
+    });
+    return await paymentRepo.save(newPayment);
   }
 }
