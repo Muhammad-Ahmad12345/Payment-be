@@ -48,4 +48,23 @@ export class PaymentService {
 
     return await paymentRepo.save(newPayment);
   }
+
+  async getTransactions(page: number, limit: number) {
+    const paymentRepo = AppDataSource.getMongoRepository(Payment);
+
+    const skip = (page - 1) * limit;
+
+    const [records, total] = await paymentRepo.findAndCount({
+      order: { createdAt: "DESC" }, // latest first
+      skip,
+      take: limit,
+    });
+
+    return {
+      data: records,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
 }

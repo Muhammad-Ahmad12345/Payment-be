@@ -23,8 +23,6 @@ export class PaymentController {
   currency,
   paymentIntent.status
 );
-
-
       res.status(200).json({
       clientSecret: paymentIntent.client_secret,
       status: paymentIntent.status,
@@ -46,5 +44,21 @@ export class PaymentController {
     });
       }
     }
+
+    async getTransactions(req: Request, res: Response) {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    const transactions = await this.paymentService.getTransactions(page, limit);
+
+    res.status(200).json(transactions);
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+}
+
   }
 

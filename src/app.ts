@@ -19,6 +19,7 @@ app.use(express.json());
 const paymentController = Container.get(PaymentController);
 
 app.post("/pay", (req: Request, res: Response) => paymentController.makePayment(req, res));
+app.get("/transactions", (req: Request, res: Response) =>paymentController.getTransactions(req, res));
 const startServer = async () => {
   await connectDB();
 app.listen(port, () => {
