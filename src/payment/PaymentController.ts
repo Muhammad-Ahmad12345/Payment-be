@@ -16,12 +16,13 @@ export class PaymentController {
         paymentMethodId
       );
 
-        await this.paymentService.savePayment(
-        amount,
-        currency,
-        paymentMethodId,
-        paymentIntent.status
-      );
+      await this.paymentService.savePayment(
+  paymentIntent.id,     
+  paymentMethodId,
+  amount,
+  currency,
+  paymentIntent.status
+);
 
 
       res.status(200).json({

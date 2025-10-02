@@ -24,15 +24,24 @@ export class PaymentService {
     });
   }
 
-  async savePayment(amount: number, currency: string, paymentMethodId: string, status: string) {
-    const paymentRepo = AppDataSource.getMongoRepository(Payment);
-    const newPayment = paymentRepo.create({
-      amount,
-      currency,
-      paymentMethodId,
-      status,
-      createdAt: new Date(),
-    });
+  async savePayment(
+  paymentIntentId: string,
+  paymentMethodId: string,
+  amount: number,
+  currency: string,
+  status: string
+) {
+  const paymentRepo = AppDataSource.getMongoRepository(Payment);
+
+  const newPayment = paymentRepo.create({
+    paymentIntentId,  
+    paymentMethodId,   
+    amount,
+    currency,
+    status,
+    createdAt: new Date(),
+  });
+
     return await paymentRepo.save(newPayment);
   }
 }
