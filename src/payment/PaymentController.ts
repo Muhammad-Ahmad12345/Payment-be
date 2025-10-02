@@ -31,9 +31,20 @@ export class PaymentController {
       amount: paymentIntent.amount
     });
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
+    console.error("❌ Payment Error:", error); // log for debugging
+
+    if (error instanceof Error) {
+      return res.status(400).json({
+        error: true,
+        message: error.message
+      });
+    }
+
+    res.status(400).json({
+      error: true,
+      message: "Unknown error occurred"
+    });
       }
     }
   }
-}
+
