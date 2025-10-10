@@ -15,8 +15,9 @@ export class Payment {
   @Column()
   paymentIntentId!: string;
 
-   @Column()
-  paymentMethodId!: string;
+  @Column({ nullable: true })
+paymentMethodId?: string;
+
 
   @Column()
   amount!: number;
