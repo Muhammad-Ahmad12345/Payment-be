@@ -19,7 +19,11 @@ async createPaymentIntent(amount: number, currency: string) {
   return await this.stripe.paymentIntents.create({
     amount,
     currency,
-    automatic_payment_methods: { enabled: true },
+     confirm: true,
+   automatic_payment_methods: {
+    enabled: true,
+    allow_redirects: "never"
+  }
   });
 }
 
