@@ -8,17 +8,16 @@ export class PaymentController {
 
  async makePayment(req: Request, res: Response) {
     try {
-      const { amount, currency, paymentMethodId } = req.body;
+      const { amount, currency,} = req.body;
 
       const paymentIntent = await this.paymentService.createPaymentIntent(
         amount,
         currency,
-        paymentMethodId
       );
 
       await this.paymentService.savePayment(
   paymentIntent.id,     
-  paymentMethodId,
+  "", 
   amount,
   currency,
   paymentIntent.status

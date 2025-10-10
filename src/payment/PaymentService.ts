@@ -15,18 +15,18 @@ export class PaymentService {
     });
   }
 
- async createPaymentIntent(amount: number, currency: string, paymentMethodId: string) {
-    return await this.stripe.paymentIntents.create({
-      amount,
-      currency,
-      payment_method: paymentMethodId,
-      confirm: true, 
-       automatic_payment_methods: {
-      enabled: true,
-      allow_redirects: "never"   
-    }
-    });
+async createPaymentIntent(amount: number, currency: string) {
+  return await this.stripe.paymentIntents.create({
+    amount,
+    currency,
+     confirm: true,
+   automatic_payment_methods: {
+    enabled: true,
+    allow_redirects: "never"
   }
+  });
+}
+
 
   async savePayment(
   paymentIntentId: string,
