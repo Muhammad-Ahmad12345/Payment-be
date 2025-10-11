@@ -9,6 +9,12 @@ export class PaymentController {
  async makePayment(req: Request, res: Response) {
     try {
       const { amount, currency,} = req.body;
+      if (!amount || !currency) {
+        return res.status(400).json({
+          error: true,
+          message: "Amount and currency are required.",
+        });
+      }
 
       const paymentIntent = await this.paymentService.createPaymentIntent(
         amount,
@@ -24,11 +30,12 @@ export class PaymentController {
 );
       res.status(200).json({
       clientSecret: paymentIntent.client_secret,
+      paymentIntentId: paymentIntent.id,
       status: paymentIntent.status,
       amount: paymentIntent.amount
     });
     } catch (error) {
-    console.error("❌ Payment Error:", error); // log for debugging
+    console.error("❌ Payment Error:", error); 
 
     if (error instanceof Error) {
       return res.status(400).json({
@@ -53,11 +60,12 @@ export class PaymentController {
 
     res.status(200).json(transactions);
   } catch (error) {
+    console.error("❌ Fetch Transactions Error:", error);
     if (error instanceof Error) {
       res.status(400).json({ message: error.message });
     }
+    return res.status(400).json({ message: "Unknown error occurred." });
   }
 }
-
   }
 
