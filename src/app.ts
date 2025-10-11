@@ -19,6 +19,7 @@ app.use(
       "http://localhost:5173", 
       "http://localhost:3000", 
       "https://payment-frontend-eta.vercel.app" ],methods: ["GET", "POST"],credentials: true,}));
+      app.options("*", cors());
 app.use(express.json());
 
 const paymentController = Container.get(PaymentController);
