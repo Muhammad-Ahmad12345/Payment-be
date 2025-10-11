@@ -11,7 +11,7 @@ export class PaymentService {
 
   constructor() {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: "2023-10-16", 
+       apiVersion: "2022-11-15",
     });
   }
 
@@ -53,7 +53,7 @@ async createPaymentIntent(amount: number, currency: string) {
     const skip = (page - 1) * limit;
 
     const [records, total] = await paymentRepo.findAndCount({
-      order: { createdAt: "DESC" }, // latest first
+      order: { createdAt: "DESC" }, 
       skip,
       take: limit,
     });
