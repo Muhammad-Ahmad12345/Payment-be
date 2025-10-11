@@ -15,13 +15,10 @@ const port = process.env.PORT || 4000;
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173", 
-      "http://localhost:3000", 
-      "https://payment-frontend-eta.vercel.app" ],methods: ["GET", "POST"],credentials: true,}));
-      app.options("*", cors());
+    origin: ["https://payment-frontend-eta.vercel.app", "https://payment-frontend-c086a4l00-muhammad-ahmad-abbas-projects.vercel.app" ],
+    methods: ["GET", "POST"],credentials: true,}));
+     app.options("*", cors());
 app.use(express.json());
-
 const paymentController = Container.get(PaymentController);
 
 app.post("/pay", (req: Request, res: Response) => paymentController.makePayment(req, res));
