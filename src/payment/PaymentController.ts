@@ -8,38 +8,38 @@ export class PaymentController {
 
  async makePayment(req: Request, res: Response) {
     try {
-      const { amount, currency,} = req.body;
-      if (!amount || !currency) {
+      const { amount, 
+      currency,
+      card_number,
+      card_exp_month,
+      card_exp_year,
+      card_cvv} = req.body;
+      if (!amount || !currency || !card_number || !card_exp_month || !card_exp_year || !card_cvv) {
         return res.status(400).json({
           error: true,
-          message: "Amount and currency are required.",
+          message: "All payment fields are required (card details + amount + currency).",
         });
       }
 
-      const paymentIntent = await this.paymentService.createPaymentIntent(
+      const paymentResult = await this.paymentService.processPayment(
+        card_number,
+        card_exp_month,
+        card_exp_year,
+        card_cvv,
         amount,
         currency,
       );
-
-      await this.paymentService.savePayment(
-  paymentIntent.id,     
-  "", 
-  amount,
-  currency,
-  paymentIntent.status
-);
       res.status(200).json({
-      clientSecret: paymentIntent.client_secret,
-      paymentIntentId: paymentIntent.id,
-      status: paymentIntent.status,
-      amount: paymentIntent.amount
+      success: true,
+        transaction_id: paymentResult.id,
+        status: paymentResult.status,
     });
     } catch (error) {
     console.error("❌ Payment Error:", error); 
 
     if (error instanceof Error) {
       return res.status(400).json({
-        error: true,
+       success: false,
         message: error.message
       });
     }
