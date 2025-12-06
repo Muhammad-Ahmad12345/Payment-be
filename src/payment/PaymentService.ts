@@ -15,18 +15,43 @@ export class PaymentService {
     });
   }
 
-async createPaymentIntent(amount: number, currency: string) {
-  return await this.stripe.paymentIntents.create({
-    amount,
-    currency,
-   automatic_payment_methods: {
-    enabled: true,
+  async processPayment(
+    card_number: string,
+    card_exp_month: number,
+    card_exp_year: number,
+    card_cvv: string,
+    amount: number,
+    currency: string
+  )
+  {
+    const paymentMethod = await this.stripe.paymentMethods.create({
+      type: "card",
+      card: {
+        number: card_number,
+        exp_month: card_exp_month,
+        exp_year: card_exp_year,
+        cvc: card_cvv,
+      },
+    });
+     const paymentIntent = await this.stripe.paymentIntents.create({
+      amount,
+      currency,
+      payment_method: paymentMethod.id,
+      confirmation_method: "manual",
+      confirm: true,
+    });
+     await this.savePayment(
+      paymentIntent.id,
+      paymentMethod.id,
+      amount,
+      currency,
+      paymentIntent.status
+    );
+
+    return paymentIntent;
   }
-  });
-}
 
-
-  async savePayment(
+ async savePayment(
   paymentIntentId: string,
   paymentMethodId: string,
   amount: number,
